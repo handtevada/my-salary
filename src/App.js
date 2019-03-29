@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Icon, Header, Card, Form, Segment, Grid } from 'semantic-ui-react'
+import { Container, Icon, Header, Card, Form, Segment, Grid, Button } from 'semantic-ui-react'
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
@@ -145,6 +145,22 @@ const SalaryCard = ({ header, salary }) => {
     )
 }
 
+const OutcomeCard = ({ index, header, salary, handleClick }) => {
+    return (
+        <Card>
+            <Card.Content>
+                <Card.Header>{header}</Card.Header>
+                <Card.Description>{salary}</Card.Description>
+            </Card.Content>
+            <Card.Content extra>
+                <Button size='mini' name="delOutcome" onClick={handleClick} delindex={index}>
+                    <Icon name='delete' />Delete
+                </Button>
+            </Card.Content>
+        </Card>
+    )
+}
+
 const SalaryOutcome = ({ totalOutcome, seterTotalOutcome }) => {
     const [outcomes, setOutcomes] = useState('')
     const [outcomeLists, setOutcomeLists] = useState([])
@@ -156,12 +172,12 @@ const SalaryOutcome = ({ totalOutcome, seterTotalOutcome }) => {
         }
     };
 
-    const handleClick = (e, values) => {
-        if (outcomes !== '') {
+    const handleClick = (e, { name, delindex }) => {
+        if (name === 'outcome' && outcomes !== '') {
             let _rows = []
             let _index = 1
             let _total = 0;
-            outcomeLists.forEach(element => {
+            outcomeLists.forEach((element) => {
                 _rows.push({ index: _index, outcomes: element.outcomes })
 
                 _total += convertStrtoInt(element.outcomes)
@@ -173,6 +189,20 @@ const SalaryOutcome = ({ totalOutcome, seterTotalOutcome }) => {
 
             setOutcomeLists(_rows)
             setOutcomes('')
+            seterTotalOutcome(numberWithCommas(_total))
+        }
+
+        if (name === 'delOutcome') {
+            const outcomeListsRm = outcomeLists.filter(({ index }) => {
+                return index !== delindex
+            })
+
+            setOutcomeLists(outcomeListsRm)
+
+            let _total = 0;
+            if (outcomeListsRm.length !== 0) {
+                _total = outcomeListsRm.map(item => item.outcomes).reduce((prev, next) => convertStrtoInt(prev) + convertStrtoInt(next));
+            }
             seterTotalOutcome(numberWithCommas(_total))
         }
     }
@@ -190,6 +220,7 @@ const SalaryOutcome = ({ totalOutcome, seterTotalOutcome }) => {
                         onChange={handleChange}
                         value={outcomes}
                         action={{
+                            name: 'outcome',
                             icon: "send",
                             onClick: handleClick
                         }} />
@@ -197,20 +228,20 @@ const SalaryOutcome = ({ totalOutcome, seterTotalOutcome }) => {
             </Container>
             <Grid columns={5} doubling stackable>
                 <Grid.Row>
-                    <SalaryOutcomeItems outcomeLists={outcomeLists}></SalaryOutcomeItems>
+                    <SalaryOutcomeItems outcomeLists={outcomeLists} handleClick={handleClick}></SalaryOutcomeItems>
                 </Grid.Row>
             </Grid>
         </Segment>
     )
 }
 
-const SalaryOutcomeItems = ({ outcomeLists }) => {
+const SalaryOutcomeItems = ({ outcomeLists, handleClick }) => {
     return (
         outcomeLists.map(({ index, outcomes }) => {
             let _outcomes = outcomes.toString().replace(/,/g, '');
             return (
                 <Grid.Column key={index}>
-                    <SalaryCard header={"Outcome " + index} salary={numberWithCommas(_outcomes)}></SalaryCard>
+                    <OutcomeCard index={index} header={"Outcome " + index} salary={numberWithCommas(_outcomes)} handleClick={handleClick}></OutcomeCard>
                 </Grid.Column>
             )
         })
