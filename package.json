@@ -1,11 +1,16 @@
 {
-  "name": "my-saraly",
+  "name": "my-salary",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-scripts": "2.1.8"
+    "react-google-charts": "^3.0.11",
+    "react-hanger": "^1.1.4",
+    "react-scripts": "2.1.8",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.86.0"
   },
   "scripts": {
     "start": "react-scripts start",
