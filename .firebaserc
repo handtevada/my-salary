@@ -1,5 +1,6 @@
 {
   "projects": {
-    "prod": "my-salary-ffb17"
+    "prod": "my-salary-ffb17",
+    "default": "my-salary-ffb17"
   }
 }
